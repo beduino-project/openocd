@@ -13,8 +13,7 @@
  *   GNU General Public License for more details.                          *
  *                                                                         *
  *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
+ *   along with this program.  If not, see <http://www.gnu.org/licenses/>. *
  ***************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -31,7 +30,7 @@
 #include "target/armv7m.h"
 #include "rtos_riot_stackings.h"
 
-static int riot_detect_rtos(struct target *target);
+static bool riot_detect_rtos(struct target *target);
 static int riot_create(struct target *target);
 static int riot_update_threads(struct rtos *rtos);
 static int riot_get_thread_reg_list(struct rtos *rtos, int64_t thread_id, char **hex_reg_list);
@@ -45,14 +44,14 @@ struct riot_thread_state {
 
 /* refer core/tcb.h */
 static const struct riot_thread_state riot_thread_states[] = {
-	{ 0, "Stopped" },
-	{ 1, "Sleeping" },
-	{ 2, "Blocked mutex" },
-	{ 3, "Blocked receive" },
-	{ 4, "Blocked send" },
-	{ 5, "Blocked reply" },
-	{ 6, "Running" },
-	{ 7, "Pending" },
+	{ 0, "State: Stopped" },
+	{ 1, "State: Sleeping" },
+	{ 2, "State: Blocked mutex" },
+	{ 3, "State: Blocked receive" },
+	{ 4, "State: Blocked send" },
+	{ 5, "State: Blocked reply" },
+	{ 6, "State: Running" },
+	{ 7, "State: Pending" },
 };
 #define RIOT_NUM_STATES (sizeof(riot_thread_states)/sizeof(struct riot_thread_state))
 
@@ -289,7 +288,6 @@ static int riot_update_threads(struct rtos *rtos)
 		}
 
 		rtos->thread_details[tasks_found].exists = true;
-		rtos->thread_details[tasks_found].display_str = NULL;
 
 		tasks_found++;
 	}
@@ -366,14 +364,14 @@ static int riot_get_symbol_list_to_lookup(symbol_table_elem_t *symbol_list[])
 	return 0;
 }
 
-static int riot_detect_rtos(struct target *target)
+static bool riot_detect_rtos(struct target *target)
 {
 	if ((target->rtos->symbols != NULL) &&
 	     (target->rtos->symbols[RIOT_THREADS_BASE].address != 0)) {
 		/* looks like RIOT */
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 static int riot_create(struct target *target)

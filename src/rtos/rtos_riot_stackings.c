@@ -22,6 +22,7 @@
 #endif
 
 #include "rtos.h"
+#include "rtos_standard_stackings.h"
 #include "target/armv7m.h"
 
 /* see thread_arch.c */
@@ -49,7 +50,7 @@ const struct rtos_register_stacking rtos_riot_Cortex_M0_stacking = {
 	0x44,					/* stack_registers_size */
 	-1,						/* stack_growth_direction */
 	ARMV7M_NUM_CORE_REGS,	/* num_output_registers */
-	8,						/* stack_alignment */
+	rtos_generic_stack_align8,		/* stack_alignment */
 	rtos_riot_Cortex_M0_stack_offsets	/* register_offsets */
 };
 
@@ -78,6 +79,6 @@ const struct rtos_register_stacking rtos_riot_Cortex_M34_stacking = {
 	0x44,					/* stack_registers_size */
 	-1,						/* stack_growth_direction */
 	ARMV7M_NUM_CORE_REGS,	/* num_output_registers */
-	8,						/* stack_alignment */
+	rtos_generic_stack_align8,		/* stack_alignment */
 	rtos_riot_Cortex_M34_stack_offsets	 /* register_offsets */
 };
